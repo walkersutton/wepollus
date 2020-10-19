@@ -1,12 +1,9 @@
-name: set_up_poll
+name: poll_a_poll
 on:
   gollum:
     # schedule:
     #     - cron: ''
   workflow_dispatch:
-  push:
-    branches:
-      - master
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +17,7 @@ jobs:
           python-version: 3.7
 
       - name: Install Requirements
-        run: pip install -r pip_requirements/set_up_poll_requirements.txt
+        run: pip install -r pip_requirements/poll_a_poll_requirements.txt
 
       - name: Execute Python script
         env:
@@ -29,5 +26,5 @@ jobs:
           ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
           ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
         run: |
-          python set_up_poll.py
+          python poll_a_poll.py
 
