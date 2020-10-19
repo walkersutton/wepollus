@@ -5,4 +5,5 @@
 * the most favorited replies to this tweet will be used as the poll's choices
 ### You Vote
 * @ 12ET on the following day, a Twitter poll is generated based on the previous day's responses
+
 follow [__@wepollus__](https://twitter.com/wepollus) on Twitter
