@@ -8,4 +8,4 @@
 
 follow [__@wepollus__](https://twitter.com/wepollus) on Twitter
 
-<img width="69px" src="https://pbs.twimg.com/profile_images/1318325485177393154/7rvIU0_1_400x400.jpg">
+[<img width="69px" src="https://pbs.twimg.com/profile_images/1318325485177393154/7rvIU0_1_400x400.jpg">](https://twitter.com/wepollus)
