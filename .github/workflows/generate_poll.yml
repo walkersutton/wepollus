@@ -1,0 +1,31 @@
+name: generate_poll
+on:
+  gollum:
+    # schedule:
+    #     - cron: ''
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install Requirements
+        run: pip install -r pip_requirements/generate_poll_requirements.txt
+
+      - name: Execute Python script
+        env:
+          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          ACCESS_SECRET: ${{ secrets.ACCESS_SECRET }}
+          WEPOLLUS_PASSWORD: ${{ secrets.WEPOLLUS_PASSWORD }}
+        run: |
+          python generate_poll.py
+
