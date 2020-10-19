@@ -18,16 +18,8 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-# finding the most recent setup status
-# TODO - make this count 1 since the most recent tweet whenever this is tweeted should be the set up tweet
-setup_id_str = ''
-wepollus_statuses = api.user_timeline(id = WEPOLLUS_TWITTER_ID, count = 10, page = 1)
-for status in wepollus_statuses:
-    # TODO - remove once a poll is out - just for testing purposes
-    # should always be the first element since we only call this function after a setup tweet is posted
-    if status.text[0:1] == "N":
-        setup_id_str = status.id_str
-        break
+# finding the most recent setup status id
+setup_id_str = api.user_timeline(id = WEPOLLUS_TWITTER_ID, count = 1, page = 1)[0].id_str
 
 # finding the best submitted poll question
 best_question = None
