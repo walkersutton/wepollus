@@ -20,7 +20,7 @@ jobs:
           python-version: 3.7
 
       - name: Install Requirements
-        run: pip install -r pip_requirements/query_poll_requirements.txt
+        run: pip install -r pip_requirements/set_up_poll_requirements.txt
 
       - name: Execute Python script
         env:
