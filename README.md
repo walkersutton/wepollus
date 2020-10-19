@@ -7,5 +7,4 @@
 * @ 12ET on the following day, a Twitter poll is generated based on the previous day's responses
 <br>
 
-[<img width="29px" src="https://cdn.worldvectorlogo.com/logos/twitter.svg">](https://twitter.com/wepollus)
 follow [__@wepollus__](https://twitter.com/wepollus) on Twitter
