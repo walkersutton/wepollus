@@ -1,8 +1,7 @@
 name: poll_a_poll
 on:
-  gollum:
-      schedule:
-      - cron: '0 8 * * 7,2,4'
+  schedule:
+  - cron: '0 8 * * 7,2,4'
 jobs:
   build:
     runs-on: ubuntu-latest
