@@ -13,6 +13,7 @@ ACCESS_SECRET = os.environ.get('ACCESS_SECRET')
 WEPOLLUS_USERNAME = 'wepollus'
 WEPOLLUS_PASSWORD = os.environ.get('WEPOLLUS_PASSWORD')
 WEPOLLUS_TWITTER_ID = '1248443462883704832'
+REPLY_PREFIX_LEN = len("@wepollus ")
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
@@ -49,6 +50,7 @@ while True:
                     except Exception as e:
                         exit("Failed while verifying question reply count")
                 if reply_count >= 2:
+                    question.full_text = question.full_text[REPLY_PREFIX_LEN:]
                     best_question = question
     except tweepy.RateLimitError as e:
         exit("Twitter api rate limit reached")
@@ -70,7 +72,9 @@ while True:
     try:
         choice = choices_suggestions.next()
         if hasattr(choice, 'in_reply_to_status_id_str') and choice.in_reply_to_status_id == int(best_question.id_str):
-            heapq.heappush(choices, (int(choice.favorite_count), choice.full_text))
+            choice_text = choice.full_text[REPLY_PREFIX_LEN:]
+            if (len(choice_text) <= 25):
+                heapq.heappush(choices, (int(choice.favorite_count), choice_text))
     except tweepy.RateLimitError as e:
         exit("Twitter api rate limit reached")
     except tweepy.TweepError as e:
