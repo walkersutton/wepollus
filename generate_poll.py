@@ -5,6 +5,7 @@ import time
 import tweepy
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.keys import Keys
 
 CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
 CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
@@ -72,7 +73,10 @@ while True:
     try:
         choice = choices_suggestions.next()
         if hasattr(choice, 'in_reply_to_status_id_str') and choice.in_reply_to_status_id == int(best_question.id_str):
-            choice_text = choice.full_text[REPLY_PREFIX_LEN:]
+            reply_offset = 0
+            for user in choice.entities['user_mentions']:
+                reply_offset += (2 + len(user['screen_name']))
+            choice_text = choice.full_text[reply_offset:]
             if (len(choice_text) <= 25):
                 heapq.heappush(choices, (int(choice.favorite_count), choice_text))
     except tweepy.RateLimitError as e:
@@ -83,6 +87,7 @@ while True:
         break
     except Exception as e:
         exit("Failed while fetching choices")
+
 best_choices = [choice[1] for choice in heapq.nlargest(4, choices)]
 
 # create Twitter poll
@@ -104,6 +109,10 @@ try:
     # popualte question
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div[2]/div').send_keys(best_question.full_text + ' #poll')
+
+    # dismiss hashtag dropdown
+    time.sleep(1)
+    webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
     # select poll tweet type
     time.sleep(1)
