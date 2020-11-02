@@ -1,7 +1,7 @@
 name: poll_a_poll
 on:
   schedule:
-  - cron: '0 16 * * 0,2,4'
+  - cron: '59 16 * * 0,2,4'
 jobs:
   build:
     runs-on: ubuntu-latest
