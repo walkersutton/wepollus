@@ -58,6 +58,7 @@ while True:
     except tweepy.TweepError as e:
         exit("Tweepy error occured")
     except StopIteration:
+        print("stopped iteration")
         break
     except Exception as e:
         exit("Failed while fetching replies")
