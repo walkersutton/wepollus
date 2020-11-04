@@ -25,14 +25,12 @@ setup_id_str = api.user_timeline(id = WEPOLLUS_TWITTER_ID, count = 1, page = 1)[
 
 # finding the best submitted poll question
 best_question = None
-best_question_favorite_count = 0
 questions = tweepy.Cursor(api.search, q='to:{}'.format(WEPOLLUS_USERNAME), since_id=setup_id_str, tweet_mode='extended').items()
 while True:
     try:
         question = questions.next()
         if hasattr(question, 'in_reply_to_status_id_str') and question.in_reply_to_status_id == int(setup_id_str):
-            if best_question == None or question.favorite_count > best_question_favorite_count:
-                best_question_favorite_count = question.favorite_count
+            if best_question == None or question.favorite_count > best_question.favorite_count:
                 reply_count = 0
                 replies = tweepy.Cursor(api.search, q='to:{}'.format(question.user.screen_name) , since_id=int(question.id_str), tweet_mode='extended').items()
                 while True:
@@ -54,7 +52,7 @@ while True:
                         exit("Failed while verifying question reply count")
                 if reply_count >= 2:
                     question.full_text = question.full_text[REPLY_PREFIX_LEN:]
-                    best_question = question.full_text
+                    best_question = question
     except tweepy.RateLimitError as e:
         exit("Twitter api rate limit reached")
     except tweepy.TweepError as e:
