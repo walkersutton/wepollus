@@ -99,11 +99,12 @@ try:
     # login page
     driver.get("https://twitter.com/login")
     time.sleep(2)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[1]/form/div/div[1]/label/div/div[2]/div/input').send_keys(WEPOLLUS_USERNAME)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[1]/form/div/div[2]/label/div/div[2]/div/input').send_keys(WEPOLLUS_PASSWORD)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[1]/form/div/div[3]/div/div').click()
-
-    # select compose tweet
+    driver.find_element_by_name('session[username_or_email]').send_keys(WEPOLLUS_USERNAME)
+    driver.find_element_by_name('session[password]').send_keys(WEPOLLUS_PASSWORD)
+    # TODO - clean up Log in button click action 
+    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div/div/span/span').click()
+    
+		# select compose tweet
     time.sleep(1)
     driver.find_element_by_xpath('/html/body/div/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div').click()
 
