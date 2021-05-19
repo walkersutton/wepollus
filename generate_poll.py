@@ -93,7 +93,7 @@ best_choices = [choice[1] for choice in heapq.nlargest(4, choices)]
 
 # create Twitter poll
 opts = Options()
-opts.headless = True
+opts.headless = False
 driver = webdriver.Firefox(options = opts)
 try:
     # login page
@@ -118,7 +118,7 @@ try:
 
     # select poll tweet type
     time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[4]/div/div/div[1]/div[3]/div').click()
+    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[3]/div/div/div[1]/div[3]/div').click()
 
     # populate choices
     for ii in range(0, len(best_choices)):
@@ -129,7 +129,7 @@ try:
         driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div[1]/div[1]/div[' + str(ii + 1) + ']/div/label/div/div[2]/div/input').send_keys(best_choices[ii])
 
     # tweet!
-    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[4]/div/div/div[2]/div[4]').click()
+    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[3]/div/div/div[2]/div[4]').click()
 
 except Exception as e:
     driver.quit()
