@@ -94,7 +94,7 @@ best_choices = [choice[1] for choice in heapq.nlargest(4, choices)]
 
 # create Twitter poll
 opts = Options()
-opts.headless = False
+opts.headless = True
 driver = webdriver.Firefox(options = opts)
 try:
     # login page
