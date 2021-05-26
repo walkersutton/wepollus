@@ -102,16 +102,12 @@ try:
     time.sleep(2)
     driver.find_element_by_name('session[username_or_email]').send_keys(WEPOLLUS_USERNAME)
     driver.find_element_by_name('session[password]').send_keys(WEPOLLUS_PASSWORD)
-    # TODO - clean up Log in button click action 
+    # TODO - clean up Log in button click action
     driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div/div/span/span').click()
-    
-		# select compose tweet
-    time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/header/div/div/div/div[1]/div[3]/a/div').click()
 
-    # popualte question
+    # populate question
     time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div[2]/div').send_keys(best_question.full_text + ' #poll')
+    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div[2]/div').send_keys(best_question.full_text + ' #poll')
 
     # dismiss hashtag dropdown
     time.sleep(1)
@@ -119,19 +115,19 @@ try:
 
     # select poll tweet type
     time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[3]/div/div/div[1]/div[3]/div').click()
+    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/div[3]').click()
 
     # populate choices
     for ii in range(0, len(best_choices)):
         time.sleep(1)
         if ii > 1:
             # expand choice container
-            driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div[1]/div[2]/div/div').click()
-        driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div[2]/div/div[1]/div[1]/div[' + str(ii + 1) + ']/div/label/div/div[2]/div/input').send_keys(best_choices[ii])
+            driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div[1]/div[2]/div/div').click()
+        driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div[1]/div[1]/div[' + str(ii + 1) + ']/div/label/div/div[2]/div/input').send_keys(best_choices[ii])
 
     # tweet!
     polling_tweet_id = api.user_timeline(count=1)[0].id
-    driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div[3]/div/div/div/div[1]/div/div/div/div/div[2]/div[3]/div/div/div[2]/div[4]').click()
+    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[2]/div[3]').click()
     api.destroy_status(polling_tweet_id)
 
 except Exception as e:
