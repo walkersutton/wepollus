@@ -65,7 +65,8 @@ while True:
 
 if (best_question == None):
     api.destroy_status(api.user_timeline(count=1)[0].id)
-    sys.exit('lack of engagement means no poll for today :(')
+    print('lack of engagement means no poll for today :(')
+    sys.exit()
 
 # finding the best choices for the poll
 choices = []
