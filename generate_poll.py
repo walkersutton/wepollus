@@ -2,13 +2,13 @@ from collections import defaultdict
 import json
 from heapq import heapify, heappush, nlargest
 from os import environ
-from time import sleep
 import requests
-import sys
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.keys import Keys
+from requests_oauthlib import OAuth1
 
+CONSUMER_KEY = environ.get('CONSUMER_KEY')
+CONSUMER_SECRET = environ.get('CONSUMER_SECRET')
+ACCESS_KEY = environ.get('ACCESS_KEY')
+ACCESS_SECRET = environ.get('ACCESS_SECRET')
 BEARER_TOKEN = environ.get('BEARER_TOKEN') # need to add to github
 WEPOLLUS_USERNAME = 'wepollus'
 WEPOLLUS_PASSWORD = environ.get('WEPOLLUS_PASSWORD')
@@ -19,13 +19,20 @@ def bearer_oauth(r):
     r.headers['Authorization'] = f'Bearer {BEARER_TOKEN}'
     return r
 
-def connect_to_endpoint(url, params, data=None):
-    response = requests.get(url, json=data, auth=bearer_oauth, params=params)
-    if response.status_code != 200:
+def connect_to_endpoint(url, params=None, data=None, type='GET'):
+    response = None
+    if type == 'GET':
+        response = requests.get(url, json=data, params=params, auth=bearer_oauth)
+    elif type == 'POST':
+        response = requests.post(url, json=data, params=params, auth=OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
+    elif type == 'DELETE':
+        response = requests.delete(url, json=data, params=params, auth= OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
+
+    if not response.status_code in (200, 201) :
         raise Exception(response.status_code, response.text)
     return response.json()
 
-def last_query_tweet_id():
+def query_tweet_id():
     url = f'https://api.twitter.com/2/users/{WEPOLLUS_TWITTER_ID}/tweets'
     params = {'max_results': 15}
     resp = connect_to_endpoint(url, params)
@@ -36,20 +43,24 @@ def last_query_tweet_id():
             break
     return query_tweet_id
 
+def delete_tweet(tweet_id):
+    url = f'https://api.twitter.com/2/tweets/{tweet_id}'
+    connect_to_endpoint(url, type='DELETE')
+
 def valid_suggestions():
-    """ Returns a list of valid poll suggestions in descending order of popularity:
+    ''' Returns a list of valid poll suggestions in descending order of popularity:
     [
         {
             'question': str,
-            'options: [
+            'options': [
                 {
                     'option': str,
                 }, ...
             ]
         }, ...
     ]
-    """
-    conversation_id = last_query_tweet_id()
+    '''
+    conversation_id = query_tweet_id()
     url = 'https://api.twitter.com/2/tweets/search/recent'
     params = {
         'query': f'conversation_id:{conversation_id}',
@@ -72,10 +83,12 @@ def valid_suggestions():
         if len(options) >= 2:
             best_options = [option[1] for option in nlargest(4, options)]
             heappush(suggestions, (-1 * question_likes, question_text, best_options))
-    
+
+    delete_tweet(conversation_id)
     return [{'question': suggestion[1], 'options': suggestion[2]} for suggestion in suggestions]
 
 def store_suggestions(suggestions):
+    ''' Appends extra suggestions to suggestions.json'''
     if suggestions:
         with open('suggestions.json', 'r+') as f:
             data = json.load(f)
@@ -83,8 +96,8 @@ def store_suggestions(suggestions):
             f.seek(0)
             json.dump(data, f, indent=2)
 
-def pop_suggestion_bank():
-    """ Returns a suggestion from suggestions.json if one exists """
+def pop_suggestion():
+    ''' Returns a suggestion from suggestions.json if one exists '''
     suggestion =  None
     with open('suggestions.json', 'r+') as f:
         data = json.load(f)
@@ -93,11 +106,10 @@ def pop_suggestion_bank():
         f.seek(0)
         f.truncate()
         json.dump(data, f, indent=2)
-
     return suggestion
 
 def create_poll(question, options):
-    """ Creates a Twitter poll using the given question and options """
+    ''' Creates a Twitter poll using the given question and options '''
     url = 'https://api.twitter.com/2/tweets'
     data = {
         'text': question,
@@ -106,21 +118,17 @@ def create_poll(question, options):
             'duration_minutes': 24 * 60
         }
     }
-    resp = connect_to_endpoint(url, None, data)
-    print(resp)
+    connect_to_endpoint(url, data=data, type='POST')
 
-def run_poll():
+def run():
     suggestions = valid_suggestions()
-    selected_suggestion = None
+    suggestion = None
     if suggestions:
-        selected_suggestion, extra_suggestions = suggestions[0], suggestions[1:]
+        suggestion, extra_suggestions = suggestions[0], suggestions[1:]
         if extra_suggestions:
             store_suggestions(extra_suggestions)
     else: # low engagement, try to pull suggestion from storage
-        # TODO
-        pass
+        suggestion = pop_suggestion()
 
-    # if selected_suggestion:
-    #     selected_question = selected_suggestion['question']
-    #     question_options = selected_suggestion['options']
-    #     create_poll(selected_question, question_options)
+    if suggestion:
+        create_poll(suggestion['question'], suggestion['options'])
