@@ -99,17 +99,19 @@ opts.headless = True
 driver = webdriver.Firefox(options = opts)
 try:
     # login page
-    driver.get("https://twitter.com/login")
+    driver.get("https://twitter.com/i/flow/login")
     time.sleep(2)
-    driver.find_element_by_name('session[username_or_email]').send_keys(WEPOLLUS_USERNAME)
-    driver.find_element_by_name('session[password]').send_keys(WEPOLLUS_PASSWORD)
+    driver.find_element_by_xpath("//*[@autocomplete='username']").send_keys(WEPOLLUS_USERNAME)
+    driver.find_element_by_xpath("//*[text()='Next']").click()
+    time.sleep(2)
+    driver.switch_to.active_element.send_keys(WEPOLLUS_PASSWORD)
+
     # TODO - clean up Log in button click action
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div/div/span/span').click()
+    driver.find_element_by_xpath("//*[text()='Log in']").click()
 
     # populate question
     time.sleep(1)
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div[2]/div').send_keys(best_question.full_text + ' #poll')
-
+    driver.find_element_by_class_name('public-DraftEditor-content').send_keys(best_question.full_text + ' #poll')
     # dismiss hashtag dropdown
     time.sleep(1)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
@@ -119,17 +121,18 @@ try:
     driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/div[3]').click()
 
     # populate choices
-    for ii in range(0, len(best_choices)):
+    for ii in range(len(best_choices)):
         time.sleep(1)
         if ii > 1:
             # expand choice container
-            driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div[1]/div[2]/div/div').click()
-        driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div[1]/div[1]/div[' + str(ii + 1) + ']/div/label/div/div[2]/div/input').send_keys(best_choices[ii])
+            driver.find_element_by_xpath("//*[@aria-label='Add a choice']").click()
+            
+        driver.find_element_by_xpath(f"//*[@name='Choice{ii + 1}']").send_keys(best_choices[ii])
 
-    # tweet!
-    polling_tweet_id = api.user_timeline(count=1)[0].id
-    driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[2]/div[3]').click()
-    api.destroy_status(polling_tweet_id)
+        # tweet!
+        polling_tweet_id = api.user_timeline(count=1)[0].id
+        driver.find_element_by_xpath("//*[@name='Tweet']").click()
+        api.destroy_status(polling_tweet_id)
 
 except Exception as e:
     driver.quit()
