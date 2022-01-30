@@ -1,20 +1,24 @@
 from heapq import heapify, heappush, nlargest
-import os
+from os import environ
+from time import sleep
 import sys
-import time
-import tweepy
+from tweepy import API, Cursor, OAuthHandler, RateLimitError, TweepError
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 
-CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-ACCESS_KEY = os.environ.get('ACCESS_KEY')
-ACCESS_SECRET = os.environ.get('ACCESS_SECRET')
+CONSUMER_KEY = environ.get('CONSUMER_KEY')
+CONSUMER_SECRET = environ.get('CONSUMER_SECRET')
+ACCESS_KEY = environ.get('ACCESS_KEY')
+ACCESS_SECRET = environ.get('ACCESS_SECRET')
 WEPOLLUS_USERNAME = 'wepollus'
-WEPOLLUS_PASSWORD = os.environ.get('WEPOLLUS_PASSWORD')
+WEPOLLUS_PASSWORD = environ.get('WEPOLLUS_PASSWORD')
 WEPOLLUS_TWITTER_ID = '1248443462883704832'
 REPLY_PREFIX_LEN = len("@wepollus ")
+
+auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
+api = API(auth)
 
 def get_poll_question():
     """ returns a Twitter API status object (?) """
@@ -23,14 +27,14 @@ def get_poll_question():
 
     # finding the best submitted poll question
     question = None
-    questions = tweepy.Cursor(api.search, q='to:{}'.format(WEPOLLUS_USERNAME), since_id=setup_id_str, tweet_mode='extended').items()
+    questions = Cursor(api.search, q=f'to:{WEPOLLUS_USERNAME}', since_id=setup_id_str, tweet_mode='extended').items()
     while True:
         try:
             question = questions.next()
             if hasattr(question, 'in_reply_to_status_id_str') and question.in_reply_to_status_id == int(setup_id_str):
                 if not question or (question.favorite_count > question.favorite_count):
                     reply_count = 0
-                    replies = tweepy.Cursor(api.search, q='to:{}'.format(question.user.screen_name) , since_id=int(question.id_str), tweet_mode='extended').items()
+                    replies = Cursor(api.search, q=f'to:{question.user.screen_name}' , since_id=int(question.id_str), tweet_mode='extended').items()
                     while True:
                         try:
                             # verify that there are at least 2 submitted question choices
@@ -40,9 +44,9 @@ def get_poll_question():
                                 reply = replies.next()
                                 if hasattr(reply, 'in_reply_to_status_id_str') and reply.in_reply_to_status_id == int(question.id_str):
                                     reply_count += 1
-                        except tweepy.RateLimitError as e:
+                        except RateLimitError as e:
                             exit("Twitter api rate limit reached")
-                        except tweepy.TweepError as e:
+                        except TweepError as e:
                             exit("Tweepy error occured")
                         except StopIteration:
                             break
@@ -51,9 +55,9 @@ def get_poll_question():
                     if reply_count >= 2:
                         question.full_text = question.full_text[REPLY_PREFIX_LEN:]
                         question = question
-        except tweepy.RateLimitError as e:
+        except RateLimitError as e:
             exit("Twitter api rate limit reached")
-        except tweepy.TweepError as e:
+        except TweepError as e:
             exit("Tweepy error occured")
         except StopIteration:
             print("stopped iteration")
@@ -64,7 +68,6 @@ def get_poll_question():
     # remove the polling tweet if there wasn't enough engagement - eventually will remove for all polling tweets
     if not question:
         api.destroy_status(api.user_timeline(count=1)[0].id)
-
     return question
     
 
@@ -73,7 +76,7 @@ def get_poll_choices(question):
     # finding the best choices for the poll
     choices = []
     heapify(choices)
-    suggestions = tweepy.Cursor(api.search, q='to:{}'.format(question.user.screen_name) , since_id=int(question.id_str), tweet_mode='extended').items()
+    suggestions = Cursor(api.search, q=f'to:{question.user.screen_name}' , since_id=int(question.id_str), tweet_mode='extended').items()
     while True:
         try:
             choice = suggestions.next()
@@ -84,9 +87,9 @@ def get_poll_choices(question):
                 choice_text = choice.full_text[reply_offset:]
                 if (len(choice_text) <= 25):
                     heappush(choices, (int(choice.favorite_count), choice_text))
-        except tweepy.RateLimitError as e:
+        except RateLimitError as e:
             exit("Twitter api rate limit reached")
-        except tweepy.TweepError as e:
+        except TweepError as e:
             exit("Tweepy error occured")
         except StopIteration:
             break
@@ -105,29 +108,29 @@ def create_poll(question, choices):
     try:
         # login page
         driver.get("https://twitter.com/i/flow/login")
-        time.sleep(2)
+        sleep(2)
         driver.find_element_by_xpath("//*[@autocomplete='username']").send_keys(WEPOLLUS_USERNAME)
         driver.find_element_by_xpath("//*[text()='Next']").click()
-        time.sleep(2)
+        sleep(2)
         driver.switch_to.active_element.send_keys(WEPOLLUS_PASSWORD)
 
         # TODO - clean up Log in button click action
         driver.find_element_by_xpath("//*[text()='Log in']").click()
 
         # populate question
-        time.sleep(1)
+        sleep(1)
         driver.find_element_by_class_name('public-DraftEditor-content').send_keys(question.full_text + ' #poll')
         # dismiss hashtag dropdown
-        time.sleep(1)
+        sleep(1)
         webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
         # select poll tweet type
-        time.sleep(1)
+        sleep(1)
         driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/div[3]').click()
 
         # populate choices
         for ii in range(len(choices)):
-            time.sleep(1)
+            sleep(1)
             if ii > 1:
                 # expand choice container
                 driver.find_element_by_xpath("//*[@aria-label='Add a choice']").click()
@@ -143,19 +146,17 @@ def create_poll(question, choices):
         driver.quit()
         exit("generic Selenium exception: " + str(e))
 
-    time.sleep(2)
+    sleep(2)
     driver.quit()
     sys.exit()
 
 
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
-api = tweepy.API(auth)
 
-poll_question = get_poll_question(api)
+def run_poll():
+    poll_question = get_poll_question()
 
-if poll_question:
-    poll_choices = get_poll_choices(api)
-    create_poll(poll_question, poll_choices)
-else:
-    print('lack of engagement means no poll for today :(')
+    if poll_question:
+        poll_choices = get_poll_choices(poll_question)
+        create_poll(poll_question, poll_choices)
+    else:
+        print('lack of engagement means no poll for today :(')
