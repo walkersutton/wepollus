@@ -1,4 +1,5 @@
 from collections import defaultdict
+import json
 from heapq import heapify, heappush, nlargest
 from os import environ
 from time import sleep
@@ -42,7 +43,7 @@ def valid_suggestions():
             'question': str,
             'choices: [
                 {
-                    'chioce': str,
+                    'choice': str,
                 }, ...
             ]
         }, ...
@@ -71,8 +72,16 @@ def valid_suggestions():
         if len(choices) >= 2:
             best_choices = [choice[1] for choice in nlargest(4, choices)]
             heappush(suggestions, (-1 * question_likes, question_text, best_choices))
-
+    
     return [{'question': suggestion[1], 'choices': suggestion[2]} for suggestion in suggestions]
+
+def store_suggestions(suggestions):
+    if suggestions:
+        with open('suggestions.json', 'r+') as f:
+            data = json.load(f)
+            data['suggestions'].extend(suggestions)
+            f.seek(0)
+            json.dump(data, f, indent=2)
 
 def create_poll(question, choices):
     """ crates a Twitter poll using the given quesiton and choices """
@@ -128,6 +137,11 @@ def create_poll(question, choices):
 
 def run_poll():
     suggestions = valid_suggestions()
+    if not suggestions:
+        pass
+    best_suggestion, perfectly_valid_suggestions_that_unfortunately_did_not_make_the_cut_for_today = suggestions[0], suggestions[1:]
+    store_suggestions(perfectly_valid_suggestions_that_unfortunately_did_not_make_the_cut_for_today)
+
 
     # if poll_question:
     #     poll_choices = get_poll_choices(poll_question)
