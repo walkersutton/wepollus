@@ -2,7 +2,7 @@
   "suggestions": [
     {
       "question": "Do you rinse your blueberries?",
-      "choices": [
+      "options": [
         "yes",
         "no",
         "sometimes"
@@ -10,14 +10,14 @@
     },
     {
       "question": "Are you 12 years old or do you like salt and vinegar potato chips?",
-      "choices": [
+      "options": [
         "yum",
         "I am 12 years old"
       ]
     },
     {
       "question": "How do you like your steak?",
-      "choices": [
+      "options": [
         "rare",
         "medium rare",
         "medium well",
@@ -26,7 +26,7 @@
     },
     {
       "question": "What country comes to mind when you think of 'Scandanavia'?",
-      "choices": [
+      "options": [
         "Denmark",
         "Finland",
         "Normay",
@@ -35,14 +35,14 @@
     },
     {
       "question": "If you bought a dozen peaches and one of them was rotten, is that peach a:",
-      "choices": [
+      "options": [
         "bad peach",
         "bad apple"
       ]
     },
     {
       "question": "How long does it take for a potato chip that falls into a liquid to turn into a soggy potato chip?",
-      "choices": [
+      "options": [
         "it's soggy once submerged",
         "less than 3 seconds",
         "more than 3 seconds"
@@ -50,14 +50,14 @@
     },
     {
       "question": "Which is more valuable?",
-      "choices": [
+      "options": [
         "good work",
         "hard work"
       ]
     },
     {
       "question": "Do you undress by removing your clothes:",
-      "choices": [
+      "options": [
         "inside out",
         "right side out",
         "I don't know"
@@ -65,7 +65,7 @@
     },
     {
       "question": "Which is your favorite mail delivery company?",
-      "choices": [
+      "options": [
         "USPS",
         "FedEx",
         "UPS",
@@ -74,7 +74,7 @@
     },
     {
       "question": "Do you think professional athletes wash their own uniforms?",
-      "choices": [
+      "options": [
         "Yes, all do",
         "Yes, most do",
         "Yes, some do",
@@ -83,7 +83,7 @@
     },
     {
       "question": "When's the last time you cried?",
-      "choices": [
+      "options": [
         "this week",
         "this month",
         "this year",
