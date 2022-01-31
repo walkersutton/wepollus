@@ -9,7 +9,7 @@ CONSUMER_KEY = environ.get('CONSUMER_KEY')
 CONSUMER_SECRET = environ.get('CONSUMER_SECRET')
 ACCESS_KEY = environ.get('ACCESS_KEY')
 ACCESS_SECRET = environ.get('ACCESS_SECRET')
-BEARER_TOKEN = environ.get('BEARER_TOKEN') # need to add to github
+BEARER_TOKEN = environ.get('BEARER_TOKEN')
 WEPOLLUS_USERNAME = 'wepollus'
 WEPOLLUS_PASSWORD = environ.get('WEPOLLUS_PASSWORD')
 WEPOLLUS_TWITTER_ID = '1248443462883704832'
@@ -34,7 +34,7 @@ def connect_to_endpoint(url, params=None, data=None, type='GET'):
 
 def query_tweet_id():
     url = f'https://api.twitter.com/2/users/{WEPOLLUS_TWITTER_ID}/tweets'
-    params = {'max_results': 15}
+    params = {'max_results': 5}
     resp = connect_to_endpoint(url, params)
     query_tweet_id = None
     for tweet in resp['data']:
@@ -68,6 +68,10 @@ def valid_suggestions():
     }
     resp = connect_to_endpoint(url, params)
     conversation_tweets = defaultdict(list)
+    if 'meta' in resp:
+        # {'meta': {'result_count': 0}}
+        # it's possible that there are not tweets found in the response
+        return []
     for tweet in resp['data']:
         conversation_tweets[tweet['referenced_tweets'][0]['id']].append(tweet)
 
@@ -120,14 +124,14 @@ def create_poll(question, options):
     }
     connect_to_endpoint(url, data=data, type='POST')
 
-def run():
+if __name__ == '__main__':
     suggestions = valid_suggestions()
     suggestion = None
     if suggestions:
         suggestion, extra_suggestions = suggestions[0], suggestions[1:]
         if extra_suggestions:
             store_suggestions(extra_suggestions)
-    else: # low engagement, try to pull suggestion from storage
+    else:
         suggestion = pop_suggestion()
 
     if suggestion:
