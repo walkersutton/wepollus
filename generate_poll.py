@@ -118,7 +118,7 @@ def create_poll(question, options):
     ''' Creates a Twitter poll using the given question and options '''
     url = 'https://api.twitter.com/2/tweets'
     data = {
-        'text': question,
+        'text': f'{question} #poll',
         'poll': {
             'options': options,
             'duration_minutes': 24 * 60
