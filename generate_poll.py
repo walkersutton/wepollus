@@ -20,17 +20,17 @@ def bearer_oauth(r):
     return r
 
 def connect_to_endpoint(url, params=None, data=None, type='GET'):
-    response = None
+    resp = None
     if type == 'GET':
-        response = requests.get(url, json=data, params=params, auth=bearer_oauth)
+        resp = requests.get(url, json=data, params=params, auth=bearer_oauth)
     elif type == 'POST':
-        response = requests.post(url, json=data, params=params, auth=OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
+        resp = requests.post(url, json=data, params=params, auth=OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
     elif type == 'DELETE':
-        response = requests.delete(url, json=data, params=params, auth= OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
+        resp = requests.delete(url, json=data, params=params, auth= OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_KEY, ACCESS_SECRET))
 
-    if not response.status_code in (200, 201) :
-        raise Exception(response.status_code, response.text)
-    return response.json()
+    if not resp.status_code in (200, 201):
+        raise Exception(resp.status_code, resp.text)
+    return resp.json()
 
 def query_tweet_id():
     url = f'https://api.twitter.com/2/users/{WEPOLLUS_TWITTER_ID}/tweets'
