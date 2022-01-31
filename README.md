@@ -1,4 +1,7 @@
 # We Poll Us
+
+![We Poll Us Logo](https://pbs.twimg.com/profile_images/1398693815217758214/fli630lU_200x200.png)
+
 ### You Choose
 * a tweet accepting poll questions and is sent out every Sunday, Tuesday, and Thursday @ 12ET
 * the most favorited tweet will be used as the next day's poll question
