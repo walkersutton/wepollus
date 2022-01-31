@@ -1,5 +1,6 @@
 name: generate_poll
 on:
+  workflow_dispatch:
   schedule:
   - cron: '59 15 * * 1,3,5'
 jobs:
@@ -27,4 +28,9 @@ jobs:
           WEPOLLUS_PASSWORD: ${{ secrets.WEPOLLUS_PASSWORD }}
         run: |
           python generate_poll.py
-
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v8.0.1
+        with:
+          add: 'suggestions.json'
+          default_author: github_actions
+          message: "updating suggestions.json - addition/removal of suggestions"

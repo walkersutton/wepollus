@@ -1,14 +1,6 @@
 {
   "suggestions": [
     {
-      "question": "Do you rinse your blueberries?",
-      "options": [
-        "yes",
-        "no",
-        "sometimes"
-      ]
-    },
-    {
       "question": "Are you 12 years old or do you like salt and vinegar potato chips?",
       "options": [
         "yum",

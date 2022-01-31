@@ -1,4 +1,3 @@
-from http.client import REQUESTED_RANGE_NOT_SATISFIABLE
 from os import environ
 import requests
 from requests_oauthlib import OAuth1
