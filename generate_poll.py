@@ -14,6 +14,7 @@ WEPOLLUS_USERNAME = 'wepollus'
 WEPOLLUS_PASSWORD = environ.get('WEPOLLUS_PASSWORD')
 WEPOLLUS_TWITTER_ID = '1248443462883704832'
 REPLY_PREFIX_LEN = len("@wepollus ")
+POLL_OPTION_CHARACTER_LIMIT = 25
 
 def bearer_oauth(r):
     r.headers['Authorization'] = f'Bearer {BEARER_TOKEN}'
@@ -83,7 +84,8 @@ def valid_suggestions():
         heapify(options)
         for option_tweet in conversation_tweets[question_tweet['id']]:
             option_text, option_likes = option_tweet['text'], option_tweet['public_metrics']['like_count']
-            heappush(options, (option_likes, option_text))
+            if len(option_text) <= POLL_OPTION_CHARACTER_LIMIT:
+                heappush(options, (option_likes, option_text))
         if len(options) >= 2:
             best_options = [option[1] for option in nlargest(4, options)]
             heappush(suggestions, (-1 * question_likes, question_text, best_options))
