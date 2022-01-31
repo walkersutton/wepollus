@@ -12,13 +12,14 @@ jobs:
       - name: Setup Python Environment
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.9
 
       - name: Install Requirements
         run: pip install -r requirements.txt
 
       - name: Execute Python script
         env:
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
           CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
           CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
           ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
