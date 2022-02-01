@@ -1,6 +1,6 @@
 # We Poll Us
 
-[![poll_a_poll](https://github.com/walkersutton/wepollus/actions/workflows/poll_a_poll.yml/badge.svg?event=workflow_dispatch)](https://github.com/walkersutton/wepollus/actions/workflows/poll_a_poll.yml)
+[![poll_a_poll](https://github.com/walkersutton/wepollus/actions/workflows/poll_a_poll.yml/badge.svg)](https://github.com/walkersutton/wepollus/actions/workflows/poll_a_poll.yml)
 [![generate_poll](https://github.com/walkersutton/wepollus/actions/workflows/generate_poll.yml/badge.svg?event=workflow_dispatch)](https://github.com/walkersutton/wepollus/actions/workflows/generate_poll.yml)
 
 ![We Poll Us Logo](https://pbs.twimg.com/profile_images/1398693815217758214/fli630lU_200x200.png)
