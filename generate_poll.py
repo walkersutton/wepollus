@@ -69,9 +69,7 @@ def valid_suggestions():
     }
     resp = connect_to_endpoint(url, params)
     conversation_tweets = defaultdict(list)
-    if 'meta' in resp:
-        # {'meta': {'result_count': 0}}
-        # it's possible that there are not tweets found in the response
+    if resp['meta']['result_count'] == 0:
         return []
     for tweet in resp['data']:
         conversation_tweets[tweet['referenced_tweets'][0]['id']].append(tweet)
