@@ -1,13 +1,6 @@
 {
   "suggestions": [
     {
-      "question": "Are you 12 years old or do you like salt and vinegar potato chips?",
-      "options": [
-        "yum",
-        "I am 12 years old"
-      ]
-    },
-    {
       "question": "How do you like your steak?",
       "options": [
         "rare",
