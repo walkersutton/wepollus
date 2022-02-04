@@ -1,14 +1,6 @@
 {
   "suggestions": [
     {
-	  "question": "Have you played Worlde?",
-      "options": [
-        "yes",
-		"no, not yet",
-		"what's Wordle?"
-	  ]
-	},
-    {
       "question": "How do you like your steak?",
       "options": [
         "rare",
