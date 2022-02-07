@@ -1,15 +1,6 @@
 {
   "suggestions": [
     {
-      "question": "How do you like your steak?",
-      "options": [
-        "rare",
-        "medium rare",
-        "medium well",
-        "i don't eat steak"
-      ]
-    },
-    {
       "question": "What country comes to mind when you think of 'Scandanavia'?",
       "options": [
         "Denmark",
