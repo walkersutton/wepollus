@@ -62,6 +62,8 @@ def valid_suggestions():
     ]
     '''
     conversation_id = query_tweet_id()
+    if not conversation_id:
+        return []
     url = 'https://api.twitter.com/2/tweets/search/recent'
     params = {
         'query': f'conversation_id:{conversation_id}',
