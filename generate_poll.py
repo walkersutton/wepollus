@@ -1,6 +1,6 @@
 from collections import defaultdict
 import json
-from heapq import heapify, heappush, nlargest
+from heapq import heappush, nlargest
 from os import environ
 import requests
 from requests_oauthlib import OAuth1
@@ -46,7 +46,8 @@ def query_tweet_id():
 
 def delete_tweet(tweet_id):
     url = f'https://api.twitter.com/2/tweets/{tweet_id}'
-    connect_to_endpoint(url, type='DELETE')
+    # connect_to_endpoint(url, type='DELETE')
+    # testing generate tweet
 
 def valid_suggestions():
     ''' Returns a list of valid poll suggestions in descending order of popularity:
@@ -77,13 +78,11 @@ def valid_suggestions():
         conversation_tweets[tweet['referenced_tweets'][0]['id']].append(tweet)
 
     suggestions = []
-    heapify(suggestions)
     for question_tweet in conversation_tweets[conversation_id]:
-        question_text, question_likes = question_tweet['text'], question_tweet['public_metrics']['like_count']
+        question_text, question_likes = question_tweet['text'][len('@wepollus '):], question_tweet['public_metrics']['like_count']
         options = []
-        heapify(options)
         for option_tweet in conversation_tweets[question_tweet['id']]:
-            option_text, option_likes = option_tweet['text'], option_tweet['public_metrics']['like_count']
+            option_text, option_likes = option_tweet['text'][len('@wepollus '):], option_tweet['public_metrics']['like_count']
             if len(option_text) <= POLL_OPTION_CHARACTER_LIMIT:
                 heappush(options, (option_likes, option_text))
         if len(options) >= 2:
