@@ -1,15 +1,6 @@
 {
   "suggestions": [
     {
-      "question": "Which is your favorite mail delivery company?",
-      "options": [
-        "USPS",
-        "FedEx",
-        "UPS",
-        "other - reply below"
-      ]
-    },
-    {
       "question": "Do you think professional athletes wash their own uniforms?",
       "options": [
         "Yes, all do",
