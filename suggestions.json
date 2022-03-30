@@ -1,13 +1,3 @@
 {
-  "suggestions": [
-    {
-      "question": "When's the last time you cried?",
-      "options": [
-        "this week",
-        "this month",
-        "this year",
-        "I can't remember"
-      ]
-    }
-  ]
+  "suggestions": []
 }
