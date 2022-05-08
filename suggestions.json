@@ -1,3 +1,12 @@
 {
-  "suggestions": []
+  "suggestions": [
+    {
+      "question": "How do you feel about @elonmusk acquiring Twitter?",
+      "options": [
+        "Yay! It’s for the best",
+        "I am upset",
+        "Doesn’t matter to me"
+      ]
+    }
+  ]
 }
